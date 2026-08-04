@@ -1,0 +1,65 @@
+{
+  "name": "code-conventions",
+  "version": "1.0.0",
+  "description": "Shared ESLint rules and Prettier plugins for AlexandreBellas projects",
+  "type": "module",
+  "exports": {
+    "./eslint": {
+      "types": "./dist/eslint/index.d.ts",
+      "import": "./dist/eslint/index.js",
+      "default": "./dist/eslint/index.js"
+    },
+    "./eslint/ts": "./src/eslint/index.ts",
+    "./prettier": "./src/prettier/index.mjs",
+    "./prettier/*": "./src/prettier/*/index.mjs"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepare": "npm run build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:AlexandreBellas/code-conventions.git"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "prettier",
+    "prettier-plugin"
+  ],
+  "author": "Alexandre Batistella Bellas",
+  "license": "MIT",
+  "private": true,
+  "peerDependencies": {
+    "eslint": ">=10.0.0",
+    "prettier": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "eslint": {
+      "optional": true
+    },
+    "prettier": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@typescript-eslint/typescript-estree": "^8.66.0",
+    "@typescript-eslint/utils": "^8.66.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "@typescript-eslint/rule-tester": "^8.66.0",
+    "eslint": "^10.8.0",
+    "prettier": "^3.9.6",
+    "tsup": "^8.5.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.10"
+  }
+}
