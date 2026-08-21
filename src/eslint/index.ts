@@ -6,6 +6,7 @@ import enforceHelperLocation from "./enforce-helper-location"
 import enforcePropsTypeNaming from "./enforce-props-type-naming"
 import enforceQueryHooksStructure from "./enforce-query-hooks-structure"
 import enforceRefSuffix from "./enforce-ref-suffix"
+import enforceServiceStructure from "./enforce-service-structure"
 import enforceSingleComponent from "./enforce-single-component"
 import enforceSingleUseTranslation from "./enforce-single-use-translation"
 import enforceTestColocation from "./enforce-test-colocation"
@@ -23,6 +24,7 @@ import requireRegions from "./require-regions"
 import requireStorybook from "./require-storybook"
 import requireUtilsConventions from "./require-utils-conventions"
 import useeffect from "./useeffect"
+
 
 const rules = {
     "enforce-component-structure": enforceComponentStructure,
@@ -48,6 +50,7 @@ const rules = {
     "require-utils-conventions": requireUtilsConventions,
     "require-regions": requireRegions,
     "require-storybook": requireStorybook,
+    "enforce-service-structure": enforceServiceStructure,
     useeffect: useeffect
 } satisfies Record<string, TSESLint.LooseRuleDefinition>
 
@@ -222,9 +225,16 @@ customPlugin.configs.recommended = [
         }
     },
     {
+        files: ["src/services/**/*.ts", "src/services/**/*.tsx"],
+        ignores: [...testAndDocsGlobs],
+        rules: {
+            "custom/enforce-service-structure": "error"
+        }
+    },
+    {
         files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
         rules: {
-            "glaut/enforce-test-colocation": "error"
+            "custom/enforce-test-colocation": "error"
         }
     }
 ]
