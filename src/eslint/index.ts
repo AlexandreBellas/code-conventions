@@ -8,6 +8,7 @@ import enforceQueryHooksStructure from "./enforce-query-hooks-structure"
 import enforceRefSuffix from "./enforce-ref-suffix"
 import enforceSingleComponent from "./enforce-single-component"
 import enforceSingleUseTranslation from "./enforce-single-use-translation"
+import enforceTestColocation from "./enforce-test-colocation"
 import enforceTypeLocation from "./enforce-type-location"
 import enforceUnionTypesSourceOfTruth from "./enforce-union-types-source-of-truth"
 import maxComponentLines from "./max-component-lines"
@@ -28,6 +29,7 @@ const rules = {
     "enforce-constant-location": enforceConstantLocation,
     "enforce-component-import-limits": enforceComponentImportLimits,
     "enforce-helper-location": enforceHelperLocation,
+    "enforce-test-colocation": enforceTestColocation,
     "enforce-query-hooks-structure": enforceQueryHooksStructure,
     "enforce-props-type-naming": enforcePropsTypeNaming,
     "enforce-ref-suffix": enforceRefSuffix,
@@ -62,53 +64,67 @@ const ctxProviderGlobs = [
     "src/**/contexts/*Provider.tsx"
 ] as const
 
+
+/**
+ * Files that carry no product code: tests exercise the product, and `docs/` holds Storybook
+ * support material. Every rule below spreads these into its `ignores`, except
+ * `enforce-test-colocation`, whose whole job is to police where test files sit.
+ */
+const testAndDocsGlobs = [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/**/docs/**"
+] as const
+
 customPlugin.configs.recommended = [
     { plugins: { custom: customPlugin } },
     {
         files: ["src/**/*.tsx", "src/**/hooks/**/*.ts"],
-        ignores: ["src/**/hooks/queries/**", "src/**/hooks/services/**"],
+        ignores: [...testAndDocsGlobs, "src/**/hooks/queries/**", "src/**/hooks/services/**"],
         rules: {
             "custom/no-direct-service-calls": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/hooks/use*.ts", "src/**/use*/index.ts"],
-        ignores: ["src/**/*.stories.tsx", "src/hooks/queries/**"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/hooks/queries/**"],
         rules: {
             "custom/enforce-props-type-naming": "error"
         }
     },
     {
         files: ["src/**/*.tsx"],
-        ignores: ["src/**/*.stories.tsx"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx"],
         rules: {
             "custom/max-component-lines": "error"
         }
     },
     {
         files: ["src/**/*.tsx"],
-        ignores: ["src/**/*.stories.tsx", "src/components/ui/**", "src/routes/**"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/components/ui/**", "src/routes/**"],
         rules: {
             "custom/enforce-single-component": "error"
         }
     },
     {
         files: ["src/components/**/*.tsx", "src/pages/**/*.tsx"],
-        ignores: ["src/components/**/*.stories.tsx", "src/components/ui/**", "src/pages/**/*.stories.tsx"],
+        ignores: [...testAndDocsGlobs, "src/components/**/*.stories.tsx", "src/components/ui/**", "src/pages/**/*.stories.tsx"],
         rules: {
             "custom/enforce-component-import-limits": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/*.ts"],
-        ignores: ["src/**/utils/**/*.ts", "src/**/*.stories.tsx", "src/routes/**"],
+        ignores: [...testAndDocsGlobs, "src/**/utils/**/*.ts", "src/**/*.stories.tsx", "src/routes/**"],
         rules: {
             "custom/enforce-helper-location": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/*.ts"],
-        ignores: [
+        ignores: [...testAndDocsGlobs,
             "src/**/constants/**/*.ts",
             "src/**/@types/**",
             "src/**/*.stories.tsx",
@@ -121,26 +137,26 @@ customPlugin.configs.recommended = [
         }
     },
     {
-        files: ["src/**/constants/**/*.ts"],
+        files: [...testAndDocsGlobs, "src/**/constants/**/*.ts"],
         rules: {
             "custom/no-types-in-constants": "error"
         }
     },
     {
-        files: ["src/**/utils/**/*.ts"],
+        files: [...testAndDocsGlobs, "src/**/utils/**/*.ts"],
         rules: {
             "custom/require-utils-conventions": "error"
         }
     },
     {
-        files: ["src/**/@types/**/*.ts"],
+        files: [...testAndDocsGlobs, "src/**/@types/**/*.ts"],
         rules: {
             "custom/enforce-union-types-source-of-truth": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/hooks/**/use*.ts", "src/**/hooks/*/index.ts"],
-        ignores: ["src/**/*.stories.tsx", "src/components/ui/**", "src/routes/**"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/components/ui/**", "src/routes/**"],
         rules: {
             "custom/region-ordering": "error",
             "custom/require-regions": "error",
@@ -150,7 +166,7 @@ customPlugin.configs.recommended = [
     },
     {
         files: ["src/**/*.ts", "src/**/*.tsx"],
-        ignores: ["src/**/*.stories.tsx", "src/**/*.stories.ts"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts"],
         rules: {
             "custom/no-non-null-assertion": "error",
             "custom/no-restricted-axios-auth": "error"
@@ -158,51 +174,57 @@ customPlugin.configs.recommended = [
     },
     {
         files: ["src/**/*.tsx"],
-        ignores: ["src/**/*.stories.tsx", "src/components/ui/**"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/components/ui/**"],
         rules: {
             "custom/no-raw-button": "error"
         }
     },
     {
         files: ["src/**/*.ts", "src/**/*.tsx"],
-        ignores: ["src/**/*.stories.tsx", "src/**/*.stories.ts", ...ctxProviderGlobs],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts", ...ctxProviderGlobs],
         rules: {
             "custom/no-restricted-use-context": "error"
         }
     },
     {
         files: ["src/components/**/*.tsx"],
-        ignores: ["src/components/ui/**", ...ctxProviderGlobs],
+        ignores: [...testAndDocsGlobs, "src/components/ui/**", ...ctxProviderGlobs],
         rules: {
             "custom/require-storybook": "warn"
         }
     },
     {
         files: ["src/components/**/*.ts", "src/components/**/*.tsx", "src/pages/**/*.ts", "src/pages/**/*.tsx"],
-        ignores: ["src/components/ui/**"],
+        ignores: [...testAndDocsGlobs, "src/components/ui/**"],
         rules: {
             "custom/enforce-component-structure": "error"
         }
     },
     {
         files: ["src/**/hooks/**/*.ts", "src/**/*.tsx"],
-        ignores: ["src/**/*.stories.tsx", "src/**/*.stories.ts"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts"],
         rules: {
             "custom/enforce-single-use-translation": "error"
         }
     },
     {
         files: ["src/**/*.ts", "src/**/*.tsx"],
-        ignores: ["src/**/*.stories.tsx", "src/**/*.stories.ts"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts"],
         rules: {
             "custom/enforce-query-hooks-structure": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/hooks/**/use*.ts", "src/**/hooks/*/index.ts"],
-        ignores: ["src/**/*.stories.tsx", "src/**/*.stories.ts"],
+        ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts"],
         rules: {
             "custom/enforce-ref-suffix": "error"
+        }
+    },
+    {
+        files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+        rules: {
+            "glaut/enforce-test-colocation": "error"
         }
     }
 ]
