@@ -3,7 +3,7 @@
  *
  * Identifies `useEffect` calls that have plain `// line comments` immediately
  * above them and converts those comments to JSDoc (`/** ... *​/`) format so they
- * satisfy the `custom/useeffect` ESLint rule automatically on save.
+ * satisfy the `reactjs/useeffect` ESLint rule automatically on save.
  *
  * Transformation rules:
  *   - Only `//` line comments are candidates.

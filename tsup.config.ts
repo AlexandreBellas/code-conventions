@@ -2,7 +2,8 @@ import { defineConfig } from "tsup"
 
 export default defineConfig({
     entry: {
-        "eslint/index": "src/eslint/index.ts"
+        "eslint/reactjs/index": "src/eslint/reactjs/index.ts",
+        "eslint/api-library/index": "src/eslint/api-library/index.ts"
     },
     format: ["esm"],
     dts: {

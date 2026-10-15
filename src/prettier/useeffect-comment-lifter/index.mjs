@@ -1,7 +1,7 @@
 /**
  * Prettier plugin that lifts plain `// line comments` above `useEffect` calls
  * into JSDoc (`/** ... *​/`) format, automatically satisfying the
- * `custom/useeffect` ESLint rule on save.
+ * `reactjs/useeffect` ESLint rule on save.
  *
  * Only comments that are:
  *   - `//` line comments (not `/* *​/` or `/** *​/`)

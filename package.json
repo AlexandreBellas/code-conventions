@@ -4,15 +4,25 @@
   "description": "Shared ESLint rules and Prettier plugins for AlexandreBellas projects",
   "type": "module",
   "exports": {
-    "./eslint": {
-      "types": "./dist/eslint/index.d.ts",
-      "import": "./dist/eslint/index.js",
-      "default": "./dist/eslint/index.js"
+    "./eslint/reactjs": {
+      "types": "./dist/eslint/reactjs/index.d.ts",
+      "import": "./dist/eslint/reactjs/index.js",
+      "default": "./dist/eslint/reactjs/index.js"
     },
-    "./eslint/ts": {
-      "types": "./src/eslint/index.ts",
-      "import": "./src/eslint/index.ts",
-      "default": "./src/eslint/index.ts"
+    "./eslint/reactjs/ts": {
+      "types": "./src/eslint/reactjs/index.ts",
+      "import": "./src/eslint/reactjs/index.ts",
+      "default": "./src/eslint/reactjs/index.ts"
+    },
+    "./eslint/api-library": {
+      "types": "./dist/eslint/api-library/index.d.ts",
+      "import": "./dist/eslint/api-library/index.js",
+      "default": "./dist/eslint/api-library/index.js"
+    },
+    "./eslint/api-library/ts": {
+      "types": "./src/eslint/api-library/index.ts",
+      "import": "./src/eslint/api-library/index.ts",
+      "default": "./src/eslint/api-library/index.ts"
     },
     "./prettier": {
       "types": "./src/prettier/index.d.ts",
@@ -27,11 +37,17 @@
   },
   "typesVersions": {
     "*": {
-      "eslint": [
-        "./dist/eslint/index.d.ts"
+      "eslint/reactjs": [
+        "./dist/eslint/reactjs/index.d.ts"
       ],
-      "eslint/ts": [
-        "./src/eslint/index.ts"
+      "eslint/reactjs/ts": [
+        "./src/eslint/reactjs/index.ts"
+      ],
+      "eslint/api-library": [
+        "./dist/eslint/api-library/index.d.ts"
+      ],
+      "eslint/api-library/ts": [
+        "./src/eslint/api-library/index.ts"
       ],
       "prettier": [
         "./src/prettier/index.d.ts"

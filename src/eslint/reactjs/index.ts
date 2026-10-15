@@ -54,7 +54,7 @@ const rules = {
     useeffect: useeffect
 } satisfies Record<string, TSESLint.LooseRuleDefinition>
 
-const customPlugin = {
+const reactjsPlugin = {
     rules,
     configs: {
         recommended: [] as TSESLint.FlatConfig.ConfigArray
@@ -81,48 +81,48 @@ const testAndDocsGlobs = [
     "src/**/docs/**"
 ] as const
 
-customPlugin.configs.recommended = [
-    { plugins: { custom: customPlugin } },
+reactjsPlugin.configs.recommended = [
+    { plugins: { reactjs: reactjsPlugin } },
     {
         files: ["src/**/*.tsx", "src/**/hooks/**/*.ts"],
         ignores: [...testAndDocsGlobs, "src/**/hooks/queries/**", "src/**/hooks/services/**"],
         rules: {
-            "custom/no-direct-service-calls": "error"
+            "reactjs/no-direct-service-calls": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/hooks/use*.ts", "src/**/use*/index.ts"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/hooks/queries/**"],
         rules: {
-            "custom/enforce-props-type-naming": "error"
+            "reactjs/enforce-props-type-naming": "error"
         }
     },
     {
         files: ["src/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx"],
         rules: {
-            "custom/max-component-lines": "error"
+            "reactjs/max-component-lines": "error"
         }
     },
     {
         files: ["src/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/components/ui/**", "src/routes/**"],
         rules: {
-            "custom/enforce-single-component": "error"
+            "reactjs/enforce-single-component": "error"
         }
     },
     {
         files: ["src/components/**/*.tsx", "src/pages/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/components/**/*.stories.tsx", "src/components/ui/**", "src/pages/**/*.stories.tsx"],
         rules: {
-            "custom/enforce-component-import-limits": "error"
+            "reactjs/enforce-component-import-limits": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/*.ts"],
         ignores: [...testAndDocsGlobs, "src/**/utils/**/*.ts", "src/**/*.stories.tsx", "src/routes/**"],
         rules: {
-            "custom/enforce-helper-location": "error"
+            "reactjs/enforce-helper-location": "error"
         }
     },
     {
@@ -136,107 +136,107 @@ customPlugin.configs.recommended = [
             "src/utils/**"
         ],
         rules: {
-            "custom/enforce-constant-location": "error"
+            "reactjs/enforce-constant-location": "error"
         }
     },
     {
         files: [...testAndDocsGlobs, "src/**/constants/**/*.ts"],
         rules: {
-            "custom/no-types-in-constants": "error"
+            "reactjs/no-types-in-constants": "error"
         }
     },
     {
         files: [...testAndDocsGlobs, "src/**/utils/**/*.ts"],
         rules: {
-            "custom/require-utils-conventions": "error"
+            "reactjs/require-utils-conventions": "error"
         }
     },
     {
         files: [...testAndDocsGlobs, "src/**/@types/**/*.ts"],
         rules: {
-            "custom/enforce-union-types-source-of-truth": "error"
+            "reactjs/enforce-union-types-source-of-truth": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/hooks/**/use*.ts", "src/**/hooks/*/index.ts"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/components/ui/**", "src/routes/**"],
         rules: {
-            "custom/region-ordering": "error",
-            "custom/require-regions": "error",
-            "custom/enforce-type-location": "error",
-            "custom/useeffect": "error"
+            "reactjs/region-ordering": "error",
+            "reactjs/require-regions": "error",
+            "reactjs/enforce-type-location": "error",
+            "reactjs/useeffect": "error"
         }
     },
     {
         files: ["src/**/*.ts", "src/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts"],
         rules: {
-            "custom/no-non-null-assertion": "error",
-            "custom/no-restricted-axios-auth": "error"
+            "reactjs/no-non-null-assertion": "error",
+            "reactjs/no-restricted-axios-auth": "error"
         }
     },
     {
         files: ["src/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/components/ui/**"],
         rules: {
-            "custom/no-raw-button": "error"
+            "reactjs/no-raw-button": "error"
         }
     },
     {
         files: ["src/**/*.ts", "src/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts", ...ctxProviderGlobs],
         rules: {
-            "custom/no-restricted-use-context": "error"
+            "reactjs/no-restricted-use-context": "error"
         }
     },
     {
         files: ["src/components/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/components/ui/**", ...ctxProviderGlobs],
         rules: {
-            "custom/require-storybook": "warn"
+            "reactjs/require-storybook": "warn"
         }
     },
     {
         files: ["src/components/**/*.ts", "src/components/**/*.tsx", "src/pages/**/*.ts", "src/pages/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/components/ui/**"],
         rules: {
-            "custom/enforce-component-structure": "error"
+            "reactjs/enforce-component-structure": "error"
         }
     },
     {
         files: ["src/**/hooks/**/*.ts", "src/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts"],
         rules: {
-            "custom/enforce-single-use-translation": "error"
+            "reactjs/enforce-single-use-translation": "error"
         }
     },
     {
         files: ["src/**/*.ts", "src/**/*.tsx"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts"],
         rules: {
-            "custom/enforce-query-hooks-structure": "error"
+            "reactjs/enforce-query-hooks-structure": "error"
         }
     },
     {
         files: ["src/**/*.tsx", "src/**/hooks/**/use*.ts", "src/**/hooks/*/index.ts"],
         ignores: [...testAndDocsGlobs, "src/**/*.stories.tsx", "src/**/*.stories.ts"],
         rules: {
-            "custom/enforce-ref-suffix": "error"
+            "reactjs/enforce-ref-suffix": "error"
         }
     },
     {
         files: ["src/services/**/*.ts", "src/services/**/*.tsx"],
         ignores: [...testAndDocsGlobs],
         rules: {
-            "custom/enforce-service-structure": "error"
+            "reactjs/enforce-service-structure": "error"
         }
     },
     {
         files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
         rules: {
-            "custom/enforce-test-colocation": "error"
+            "reactjs/enforce-test-colocation": "error"
         }
     }
 ]
 
-export default customPlugin
+export default reactjsPlugin
