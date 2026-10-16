@@ -103,7 +103,8 @@ function isNestedFunction(node: TSESTree.Node): boolean {
  * The entity class lives in `index.ts`. Request and response types live in
  * `interfaces/<operation>.interface.ts` and `types/<name>.type.ts`, and each of
  * those files exports the name its filename implies. An operation file may
- * export that response as an interface or as a type alias, including `void`.
+ * export that response as an interface or as a type alias. Empty responses use
+ * `void` or `null`, as in `type IDeleteResponse = void` and `type IChangePasswordResponse = null`.
  */
 const rule: TSESLint.RuleModule<IMessageIds> = {
     meta: {
@@ -127,7 +128,7 @@ const rule: TSESLint.RuleModule<IMessageIds> = {
                 "{{file}} must export at least type {{name}}. The filename stem is the type name: situacao.type.ts exports type ISituacao.",
             missingRequiredInterface:
                 "{{file}} must export at least interface {{name}} or type {{name}}. " +
-                "Use a type when the response is void, as in type IDeleteResponse = void. " +
+                "Use a type when the response is void or null, as in type IDeleteResponse = void or type IChangePasswordResponse = null. " +
                 "get.interface.ts exports interface IGetResponse, and any-name-here.interface.ts exports interface IAnyNameHereResponse."
         },
         schema: []

@@ -36,6 +36,11 @@ ruleTester.run("enforce-entity-module-layout", rule, {
             code: "export interface IDeleteParams { id: number }\nexport type IDeleteResponse = void"
         },
         {
+            name: "null response may be a type alias",
+            filename: "/proj/src/entities/usuarios/interfaces/change-password.interface.ts",
+            code: "export interface IChangePasswordBody { hash: string }\nexport type IChangePasswordResponse = null"
+        },
+        {
             name: "type file",
             filename: "/proj/src/entities/contatos/types/situacao.type.ts",
             code: "export type ISituacao = 1 | 2"
