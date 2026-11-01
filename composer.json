@@ -1,0 +1,46 @@
+{
+    "name": "alexandrebellas/code-conventions",
+    "description": "Shared code conventions for AlexandreBellas projects: ESLint, Prettier, PHPStan, and PHP-CS-Fixer.",
+    "scripts": {
+        "test": "phpunit"
+    },
+    "type": "phpstan-extension",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpstan/phpstan": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "AlexandreBellas\\CodeConventions\\PhpStan\\": "php/api-library/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AlexandreBellas\\CodeConventions\\PhpStan\\Tests\\": "php/api-library/tests/"
+        }
+    },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "php/api-library/extension.neon"
+            ]
+        }
+    },
+    "suggest": {
+        "phpstan/extension-installer": "Auto-registers the api-library PHPStan extension.",
+        "friendsofphp/php-cs-fixer": "Required to reuse the shared PHP-CS-Fixer config."
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
