@@ -1,7 +1,7 @@
 {
   "name": "code-conventions",
   "version": "1.0.0",
-  "description": "Shared ESLint rules and Prettier plugins for AlexandreBellas projects",
+  "description": "Shared ESLint rules, Prettier plugins, PHPStan rules, and PHP-CS-Fixer config for AlexandreBellas projects",
   "type": "module",
   "exports": {
     "./eslint/reactjs": {
