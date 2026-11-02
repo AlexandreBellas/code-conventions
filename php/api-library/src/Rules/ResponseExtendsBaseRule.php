@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -12,13 +13,15 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 
 /**
- * `*Response` extends `BaseResponseRootObject`. `*ResponseData*` extends `BaseResponseObject`.
+ * `*Response` extends the configured root class. `*ResponseData*` extends the configured object class.
  *
  * @implements Rule<Class_>
  */
 final class ResponseExtendsBaseRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.responseExtendsBase';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -34,9 +37,9 @@ final class ResponseExtendsBaseRule implements Rule
 
         $expected = null;
         if (str_contains($name, 'ResponseData')) {
-            $expected = 'BaseResponseObject';
+            $expected = $this->config->short($this->config->responseObjectClass);
         } elseif (str_ends_with($name, 'Response')) {
-            $expected = 'BaseResponseRootObject';
+            $expected = $this->config->short($this->config->responseRootClass);
         }
 
         if ($expected === null) {

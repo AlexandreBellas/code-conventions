@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -23,6 +24,8 @@ use PHPStan\Rules\Rule;
 final class NoCrossEntityImportsRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.noCrossEntityImports';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -79,7 +82,7 @@ final class NoCrossEntityImportsRule implements Rule
 
     private function importedModule(string $name): ?string
     {
-        $prefix = Paths::NAMESPACE_ROOT . '\\Entities\\';
+        $prefix = trim($this->config->rootNamespace, '\\') . '\\Entities\\';
         if (!str_starts_with($name, $prefix)) {
             return null;
         }

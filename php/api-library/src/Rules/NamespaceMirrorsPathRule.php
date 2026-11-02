@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -22,6 +23,8 @@ final class NamespaceMirrorsPathRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.namespaceMirrorsPath';
 
+    public function __construct(private readonly Config $config) {}
+
     public function getNodeType(): string
     {
         return FileNode::class;
@@ -34,7 +37,7 @@ final class NamespaceMirrorsPathRule implements Rule
             return [];
         }
 
-        $expected = Paths::expectedNamespace($file);
+        $expected = Paths::expectedNamespace($file, $this->config->rootNamespace);
         if ($expected === null) {
             return [];
         }

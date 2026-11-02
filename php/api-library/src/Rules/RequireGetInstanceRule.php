@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -19,6 +20,8 @@ use PHPStan\Rules\Rule;
 final class RequireGetInstanceRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.requireGetInstance';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -38,7 +41,7 @@ final class RequireGetInstanceRule implements Rule
         }
 
         return [
-            Errors::at($node, self::IDENTIFIER, 'An entity spec defines private function getInstance(IBlingRepository $repository).'),
+            Errors::at($node, self::IDENTIFIER, sprintf('An entity spec defines private function getInstance(%s $repository).', $this->config->short($this->config->repositoryInterface))),
         ];
     }
 

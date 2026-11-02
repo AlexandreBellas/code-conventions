@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan;
 
 /**
- * Path checks for the api-library preset. Mirrors the entity layout in bling-erp-api-php.
+ * Path checks for the api-library preset.
  */
 final class Paths
 {
-    public const NAMESPACE_ROOT = 'AleBatistella\\BlingErpApi';
-
     public static function normalize(string $filename): string
     {
         return str_replace('\\', '/', $filename);
@@ -23,9 +21,11 @@ final class Paths
         return str_contains($path, '/__tests__/') || str_ends_with($path, '.spec.php');
     }
 
-    public static function isBlingFacade(string $filename): bool
+    public static function isFacade(string $filename, string $facadeClass): bool
     {
-        return (bool) preg_match('#(?:^|/)src/Bling\.php$#', self::normalize($filename));
+        $file = preg_quote($facadeClass, '#') . '\\.php';
+
+        return (bool) preg_match('#(?:^|/)src/' . $file . '$#', self::normalize($filename));
     }
 
     public static function isHelpersFunctions(string $filename): bool
@@ -89,24 +89,31 @@ final class Paths
 
     public static function srcRelative(string $filename): ?string
     {
-        if (!preg_match('#(?:^|/)src/(.+)$#', self::normalize($filename), $match)) {
-            return null;
+        $path = self::normalize($filename);
+        $marker = '/src/';
+        $index = strrpos($path, $marker);
+        if ($index !== false) {
+            return substr($path, $index + strlen($marker));
         }
 
-        return $match[1];
+        if (str_starts_with($path, 'src/')) {
+            return substr($path, strlen('src/'));
+        }
+
+        return null;
     }
 
-    public static function expectedNamespace(string $filename): ?string
+    public static function expectedNamespace(string $filename, string $rootNamespace): ?string
     {
         $relative = self::srcRelative($filename);
         if ($relative === null) {
             return null;
         }
 
-        return self::namespaceFromRelativeDir(dirname($relative));
+        return self::namespaceFromRelativeDir(dirname($relative), $rootNamespace);
     }
 
-    public static function expectedTestNamespace(string $filename): ?string
+    public static function expectedTestNamespace(string $filename, string $rootNamespace): ?string
     {
         $relative = self::srcRelative($filename);
         if ($relative === null) {
@@ -116,7 +123,7 @@ final class Paths
         $dir = dirname($relative);
         $dir = preg_replace('#/__tests__$#', '', $dir) ?? $dir;
         $dir = str_replace('/__tests__/', '/', $dir);
-        $production = self::namespaceFromRelativeDir($dir);
+        $production = self::namespaceFromRelativeDir($dir, $rootNamespace);
 
         return 'Tests\\Unit\\' . $production;
     }
@@ -131,13 +138,13 @@ final class Paths
         return basename($base, '.php');
     }
 
-    public static function facadeFile(string $entityFilename): ?string
+    public static function facadeFile(string $entityFilename, string $facadeClass): ?string
     {
         if (!preg_match('#^(.*?)/src/Entities/#', self::normalize($entityFilename), $match)) {
             return null;
         }
 
-        return $match[1] . '/src/Bling.php';
+        return $match[1] . '/src/' . $facadeClass . '.php';
     }
 
     public static function moduleDirectory(string $entityFilename): ?string
@@ -154,14 +161,15 @@ final class Paths
         return $match[1] . '/src/Entities/' . $located['module'];
     }
 
-    private static function namespaceFromRelativeDir(string $dir): string
+    private static function namespaceFromRelativeDir(string $dir, string $rootNamespace): string
     {
+        $rootNamespace = trim($rootNamespace, '\\');
         if ($dir === '.' || $dir === '') {
-            return self::NAMESPACE_ROOT;
+            return $rootNamespace;
         }
 
         $dir = str_replace('@shared', 'Shared', $dir);
 
-        return self::NAMESPACE_ROOT . '\\' . str_replace('/', '\\', $dir);
+        return $rootNamespace . '\\' . str_replace('/', '\\', $dir);
     }
 }

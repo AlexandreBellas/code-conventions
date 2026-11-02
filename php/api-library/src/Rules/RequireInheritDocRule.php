@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\DocComments;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use PhpParser\Node;
@@ -21,6 +22,8 @@ use PHPStan\Rules\Rule;
 final class RequireInheritDocRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.requireInheritDoc';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -59,7 +62,7 @@ final class RequireInheritDocRule implements Rule
     private function implementsResponseRoot(Class_ $class): bool
     {
         foreach ($class->implements as $name) {
-            if ($name->getLast() === 'IResponseRootObject') {
+            if ($name->getLast() === $this->config->short($this->config->responseContract)) {
                 return true;
             }
         }

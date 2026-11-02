@@ -66,9 +66,9 @@ final class Ast
         return $verb;
     }
 
-    public static function isRequestOptions(New_ $new): bool
+    public static function isRequestOptions(New_ $new, string $class): bool
     {
-        return $new->class instanceof Name && $new->class->getLast() === 'RequestOptions';
+        return $new->class instanceof Name && $new->class->getLast() === $class;
     }
 
     /**
@@ -101,7 +101,7 @@ final class Ast
         return str_ends_with($expr->class->getLast(), 'Response');
     }
 
-    public static function isParentObjectToArray(Node $node): bool
+    public static function isParentToArrayCall(Node $node, string $function): bool
     {
         if (!$node instanceof StaticCall || !$node->class instanceof Name || !$node->name instanceof Identifier) {
             return false;
@@ -120,7 +120,7 @@ final class Ast
             return false;
         }
 
-        if ($argument->name->toString() !== 'objectToArray' || count($argument->args) !== 1) {
+        if ($argument->name->toString() !== $function || count($argument->args) !== 1) {
             return false;
         }
 

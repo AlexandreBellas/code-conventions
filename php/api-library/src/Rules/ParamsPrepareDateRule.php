@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use AlexandreBellas\CodeConventions\PhpStan\Types;
@@ -21,13 +22,15 @@ use PHPStan\Node\FileNode;
 use PHPStan\Rules\Rule;
 
 /**
- * A DateTimeInterface parameter of a *Params constructor is passed to prepareStringOrDateParam.
+ * A DateTimeInterface parameter of a *Params constructor is passed to the configured date method.
  *
  * @implements Rule<FileNode>
  */
 final class ParamsPrepareDateRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.paramsPrepareDate';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -66,7 +69,7 @@ final class ParamsPrepareDateRule implements Rule
     {
         $prepared = [];
         foreach ((new NodeFinder())->findInstanceOf($method->stmts ?? [], MethodCall::class) as $call) {
-            if (!$call->name instanceof Identifier || $call->name->toString() !== 'prepareStringOrDateParam') {
+            if (!$call->name instanceof Identifier || $call->name->toString() !== $this->config->prepareDateMethod) {
                 continue;
             }
 
@@ -86,7 +89,7 @@ final class ParamsPrepareDateRule implements Rule
                 continue;
             }
 
-            $errors[] = Errors::at($param, self::IDENTIFIER, sprintf('$%s must be passed through prepareStringOrDateParam.', $param->var->name));
+            $errors[] = Errors::at($param, self::IDENTIFIER, sprintf('$%s must be passed through %s.', $param->var->name, $this->config->prepareDateMethod));
         }
 
         return $errors;

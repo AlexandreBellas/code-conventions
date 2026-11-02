@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\DocComments;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use PhpParser\Node;
@@ -14,13 +15,15 @@ use PHPStan\Node\FileNode;
 use PHPStan\Rules\Rule;
 
 /**
- * A method that implements IBlingRepository uses @inheritDoc.
+ * A method that implements the configured repository interface uses @inheritDoc.
  *
  * @implements Rule<FileNode>
  */
 final class RequireRepositoryInheritDocRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.requireRepositoryInheritDoc';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -41,7 +44,7 @@ final class RequireRepositoryInheritDocRule implements Rule
                     continue;
                 }
 
-                $errors[] = Errors::at($method, self::IDENTIFIER, sprintf('%s implements IBlingRepository and must document @inheritDoc.', $name));
+                $errors[] = Errors::at($method, self::IDENTIFIER, sprintf('%s implements %s and must document @inheritDoc.', $name, $this->config->short($this->config->repositoryInterface)));
             }
         }
 
@@ -50,14 +53,11 @@ final class RequireRepositoryInheritDocRule implements Rule
 
     private function implementsRepository(Class_ $class): bool
     {
+        $interface = $this->config->short($this->config->repositoryInterface);
         foreach ($class->implements as $name) {
-            if ($name->getLast() === 'IBlingRepository') {
+            if ($name->getLast() === $interface) {
                 return true;
             }
-        }
-
-        if ($class->extends !== null && $class->extends->getLast() === 'BlingRepository') {
-            return true;
         }
 
         return false;

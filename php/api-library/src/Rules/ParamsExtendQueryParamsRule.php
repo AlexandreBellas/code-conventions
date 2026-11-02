@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -12,13 +13,15 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 
 /**
- * A `*Params` schema class extends `QueryParams`.
+ * A `*Params` schema class extends the configured query class.
  *
  * @implements Rule<Class_>
  */
 final class ParamsExtendQueryParamsRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.paramsExtendQueryParams';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -32,12 +35,13 @@ final class ParamsExtendQueryParamsRule implements Rule
             return [];
         }
 
-        if ($node->extends !== null && $node->extends->getLast() === 'QueryParams') {
+        $expected = $this->config->short($this->config->queryParamsClass);
+        if ($node->extends !== null && $node->extends->getLast() === $expected) {
             return [];
         }
 
         return [
-            Errors::at($node, self::IDENTIFIER, sprintf('%s must extend QueryParams.', $name)),
+            Errors::at($node, self::IDENTIFIER, sprintf('%s must extend %s.', $name, $expected)),
         ];
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -14,13 +15,15 @@ use PHPStan\Node\FileNode;
 use PHPStan\Rules\Rule;
 
 /**
- * The entity module class is a concrete, non-readonly subclass of BaseEntity.
+ * The entity module class is a concrete, non-readonly subclass of the configured base class.
  *
  * @implements Rule<FileNode>
  */
 final class EntityExtendsBaseRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.entityExtendsBase';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -39,7 +42,8 @@ final class EntityExtendsBaseRule implements Rule
         ));
 
         $class = $classes[0] ?? null;
-        $extendsBase = $class?->extends !== null && $class->extends->getLast() === 'BaseEntity';
+        $base = $this->config->short($this->config->entityBaseClass);
+        $extendsBase = $class?->extends !== null && $class->extends->getLast() === $base;
         if ($class !== null && $extendsBase && !$class->isAbstract() && !$class->isReadonly()) {
             return [];
         }
@@ -48,7 +52,7 @@ final class EntityExtendsBaseRule implements Rule
         $name = $located['module'] ?? 'Entity';
 
         return [
-            Errors::at($class ?? $node, self::IDENTIFIER, sprintf('Entity class %s must be a concrete, non-readonly subclass of BaseEntity.', $name)),
+            Errors::at($class ?? $node, self::IDENTIFIER, sprintf('Entity class %s must be a concrete, non-readonly subclass of %s.', $name, $base)),
         ];
     }
 }

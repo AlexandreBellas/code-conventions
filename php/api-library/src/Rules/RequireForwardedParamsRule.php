@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use AlexandreBellas\CodeConventions\PhpStan\Types;
@@ -25,6 +26,8 @@ use PHPStan\Rules\Rule;
 final class RequireForwardedParamsRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.requireForwardedParams';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -59,13 +62,14 @@ final class RequireForwardedParamsRule implements Rule
         }
 
         $named = $this->requestOptions($node);
+        $requestClass = $this->config->short($this->config->requestOptionsClass);
         $errors = [];
         if ($query !== null && !$this->forwards($named, 'queryParams', $query)) {
-            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('$%s must be forwarded as the queryParams argument of RequestOptions.', $query));
+            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('$%s must be forwarded as the queryParams argument of %s.', $query, $requestClass));
         }
 
         if ($body !== null && !$this->forwards($named, 'body', $body)) {
-            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('$%s must be forwarded as the body argument of RequestOptions.', $body));
+            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('$%s must be forwarded as the body argument of %s.', $body, $requestClass));
         }
 
         return $errors;
@@ -107,7 +111,7 @@ final class RequireForwardedParamsRule implements Rule
 
         $created = (new NodeFinder())->findInstanceOf($method->stmts, New_::class);
         foreach ($created as $new) {
-            if (!Ast::isRequestOptions($new)) {
+            if (!Ast::isRequestOptions($new, $this->config->short($this->config->requestOptionsClass))) {
                 continue;
             }
 
