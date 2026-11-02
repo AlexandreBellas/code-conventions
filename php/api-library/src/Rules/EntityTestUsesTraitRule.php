@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -13,13 +14,15 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 
 /**
- * An entity spec uses TestResponseTrait.
+ * An entity spec uses the configured response trait.
  *
  * @implements Rule<Class_>
  */
 final class EntityTestUsesTraitRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.entityTestUsesTrait';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -38,14 +41,14 @@ final class EntityTestUsesTraitRule implements Rule
             }
 
             foreach ($statement->traits as $trait) {
-                if ($trait->getLast() === 'TestResponseTrait') {
+                if ($trait->getLast() === $this->config->short($this->config->testResponseTrait)) {
                     return [];
                 }
             }
         }
 
         return [
-            Errors::at($node, self::IDENTIFIER, 'An entity spec uses TestResponseTrait.'),
+            Errors::at($node, self::IDENTIFIER, sprintf('An entity spec uses %s.', $this->config->short($this->config->testResponseTrait))),
         ];
     }
 

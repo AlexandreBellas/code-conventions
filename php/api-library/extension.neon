@@ -1,4 +1,45 @@
+parametersSchema:
+    apiLibrary: structure([
+        rootNamespace: string(),
+        docsHost: string(),
+        facadeClass: string(),
+        repositoryInterface: string(),
+        apiException: string(),
+        internalException: string(),
+        entityBaseClass: string(),
+        queryParamsClass: string(),
+        responseRootClass: string(),
+        responseObjectClass: string(),
+        responseContract: string(),
+        requestOptionsClass: string(),
+        prepareDateMethod: string(),
+        toArrayFunction: string(),
+        enumDocblockPrefix: string(),
+        requestDtoClasses: listOf(string()),
+        testResponseTrait: string(),
+    ])
+
 services:
+    -
+        class: AlexandreBellas\CodeConventions\PhpStan\Config
+        arguments:
+            rootNamespace: %apiLibrary.rootNamespace%
+            docsHost: %apiLibrary.docsHost%
+            facadeClass: %apiLibrary.facadeClass%
+            repositoryInterface: %apiLibrary.repositoryInterface%
+            apiException: %apiLibrary.apiException%
+            internalException: %apiLibrary.internalException%
+            entityBaseClass: %apiLibrary.entityBaseClass%
+            queryParamsClass: %apiLibrary.queryParamsClass%
+            responseRootClass: %apiLibrary.responseRootClass%
+            responseObjectClass: %apiLibrary.responseObjectClass%
+            responseContract: %apiLibrary.responseContract%
+            requestOptionsClass: %apiLibrary.requestOptionsClass%
+            prepareDateMethod: %apiLibrary.prepareDateMethod%
+            toArrayFunction: %apiLibrary.toArrayFunction%
+            enumDocblockPrefix: %apiLibrary.enumDocblockPrefix%
+            requestDtoClasses: %apiLibrary.requestDtoClasses%
+            testResponseTrait: %apiLibrary.testResponseTrait%
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\NoStrictTypesRule
         tags: [phpstan.rules.rule]
@@ -16,30 +57,44 @@ services:
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\NamespaceMirrorsPathRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\TestNamespaceRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\ReadonlyFinalSchemaRule
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\ParamsExtendQueryParamsRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\ResponseExtendsBaseRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\EntityExtendsBaseRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\EntityModuleLayoutRule
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\NoCrossEntityImportsRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\SharedDoesNotImportEntitiesRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\NoHttpInEntitiesRule
@@ -52,9 +107,13 @@ services:
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireEntitySeeRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireRepositoryThrowsRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\PhpDocParamNamesRule
@@ -70,9 +129,13 @@ services:
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireDocblockSummaryRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\EnumDocblockRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\BackedEnumRule
@@ -82,21 +145,31 @@ services:
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\ParamsPrepareDateRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\ParamsCallParentRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\EntityRepositoryCallRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireForwardedParamsRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\EndpointKebabCaseRule
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireFacadeRegistrationRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireEntitySpecRule
@@ -112,18 +185,28 @@ services:
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\EntityTestUsesTraitRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireGetInstanceRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireInheritDocRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\RequireRepositoryInheritDocRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\ReadonlyRequestDtoRule
+        arguments:
+            config: @AlexandreBellas\CodeConventions\PhpStan\Config
         tags: [phpstan.rules.rule]
     -
         class: AlexandreBellas\CodeConventions\PhpStan\Rules\FunctionExistsWrapperRule

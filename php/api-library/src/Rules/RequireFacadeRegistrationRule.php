@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -12,7 +13,7 @@ use PHPStan\Node\FileNode;
 use PHPStan\Rules\Rule;
 
 /**
- * The entity is imported, documented with @property, and constructed via getModule() in src/Bling.php.
+ * The entity is imported, documented with @property, and constructed via getModule() in the facade file.
  *
  * @implements Rule<FileNode>
  */
@@ -22,6 +23,8 @@ final class RequireFacadeRegistrationRule implements Rule
 
     /** @var array<string, string|null> */
     private static array $facades = [];
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -42,7 +45,8 @@ final class RequireFacadeRegistrationRule implements Rule
 
         $class = $located['module'];
         $getter = lcfirst($class);
-        $facade = Paths::facadeFile($file);
+        $facadeClass = $this->config->short($this->config->facadeClass);
+        $facade = Paths::facadeFile($file, $facadeClass);
         if ($facade === null) {
             return [];
         }
@@ -57,22 +61,23 @@ final class RequireFacadeRegistrationRule implements Rule
         $source = self::$facades[$facade];
         if ($source === null) {
             return [
-                Errors::at($node, self::IDENTIFIER, sprintf('%s is not registered because src/Bling.php is missing.', $class)),
+                Errors::at($node, self::IDENTIFIER, sprintf('%s is not registered because src/%s.php is missing.', $class, $facadeClass)),
             ];
         }
 
         $errors = [];
-        $import = Paths::NAMESPACE_ROOT . '\\Entities\\' . $class . '\\' . $class;
+        $facadeFile = 'src/' . $facadeClass . '.php';
+        $import = trim($this->config->rootNamespace, '\\') . '\\Entities\\' . $class . '\\' . $class;
         if (preg_match('/use\s+' . preg_quote($import, '/') . '\s*;/', $source) !== 1) {
-            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('%s is missing `use %s;` in src/Bling.php.', $class, $import));
+            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('%s is missing `use %s;` in %s.', $class, $import, $facadeFile));
         }
 
         if (preg_match('/@property\s+' . preg_quote($class, '/') . '\s+\$' . preg_quote($getter, '/') . '\b/', $source) !== 1) {
-            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('%s is missing `@property %s $%s` in src/Bling.php.', $class, $class, $getter));
+            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('%s is missing `@property %s $%s` in %s.', $class, $class, $getter, $facadeFile));
         }
 
         if (preg_match('/getModule\(\s*' . preg_quote($class, '/') . '::class\s*\)/', $source) !== 1) {
-            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('%s is missing `getModule(%s::class)` in src/Bling.php.', $class, $class));
+            $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('%s is missing `getModule(%s::class)` in %s.', $class, $class, $facadeFile));
         }
 
         return $errors;

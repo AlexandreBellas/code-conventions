@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -18,13 +19,15 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 
 /**
- * A public entity method calls one repository verb with RequestOptions and returns *Response::fromResponse().
+ * A public entity method calls one repository verb with the configured request class and returns *Response::fromResponse().
  *
  * @implements Rule<ClassMethod>
  */
 final class EntityRepositoryCallRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.entityRepositoryCall';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -49,10 +52,11 @@ final class EntityRepositoryCallRule implements Rule
             $call = $calls[0];
             $argument = $call->args[0] ?? null;
             $new = ($argument instanceof Node\Arg) ? $argument->value : null;
-            $named = ($new instanceof New_ && Ast::isRequestOptions($new)) ? Ast::namedArguments($new) : null;
+            $requestClass = $this->config->short($this->config->requestOptionsClass);
+            $named = ($new instanceof New_ && Ast::isRequestOptions($new, $requestClass)) ? Ast::namedArguments($new) : null;
             $allowed = $named !== null && isset($named['endpoint']) && array_diff(array_keys($named), Ast::REQUEST_OPTION_NAMES) === [];
             if (count($call->args) !== 1 || !$allowed) {
-                $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('%s must pass a single new RequestOptions(...) using only the named arguments endpoint, queryParams, headers, and body.', $name));
+                $errors[] = Errors::at($node, self::IDENTIFIER, sprintf('%s must pass a single new %s(...) using only the named arguments endpoint, queryParams, headers, and body.', $name, $requestClass));
             }
         }
 

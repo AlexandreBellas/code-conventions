@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -16,13 +17,15 @@ use PHPStan\Node\FileNode;
 use PHPStan\Rules\Rule;
 
 /**
- * A *Params constructor finishes with parent::__construct(objectToArray($this)).
+ * A *Params constructor finishes with parent::__construct(toArrayFunction($this)).
  *
  * @implements Rule<FileNode>
  */
 final class ParamsCallParentRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.paramsCallParent';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -51,7 +54,7 @@ final class ParamsCallParentRule implements Rule
                     continue;
                 }
 
-                $errors[] = Errors::at($method, self::IDENTIFIER, sprintf('%s::__construct must finish with parent::__construct(objectToArray($this)).', $className));
+                $errors[] = Errors::at($method, self::IDENTIFIER, sprintf('%s::__construct must finish with parent::__construct(%s($this)).', $className, $this->config->toArrayFunction));
             }
         }
 
@@ -68,6 +71,6 @@ final class ParamsCallParentRule implements Rule
         $last = $statements[array_key_last($statements)];
         $expr = $last instanceof Expression ? $last->expr : $last;
 
-        return Ast::isParentObjectToArray($expr);
+        return Ast::isParentToArrayCall($expr, $this->config->toArrayFunction);
     }
 }

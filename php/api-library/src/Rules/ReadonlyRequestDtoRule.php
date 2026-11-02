@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -12,13 +13,15 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 
 /**
- * QueryParams, Body, and Headers are `readonly class` and stay open for extension.
+ * The configured request DTO classes are `readonly class` and stay open for extension.
  *
  * @implements Rule<Class_>
  */
 final class ReadonlyRequestDtoRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.readonlyRequestDto';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -32,7 +35,8 @@ final class ReadonlyRequestDtoRule implements Rule
             return [];
         }
 
-        if (!in_array($name, ['QueryParams', 'Body', 'Headers'], true)) {
+        $allowed = array_map($this->config->short(...), $this->config->requestDtoClasses);
+        if (!in_array($name, $allowed, true)) {
             return [];
         }
 

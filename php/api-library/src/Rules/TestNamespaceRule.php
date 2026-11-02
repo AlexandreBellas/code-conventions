@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
 use PhpParser\Node;
@@ -22,6 +23,8 @@ final class TestNamespaceRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.testNamespace';
 
+    public function __construct(private readonly Config $config) {}
+
     public function getNodeType(): string
     {
         return FileNode::class;
@@ -34,7 +37,7 @@ final class TestNamespaceRule implements Rule
             return [];
         }
 
-        $expected = Paths::expectedTestNamespace($file);
+        $expected = Paths::expectedTestNamespace($file, $this->config->rootNamespace);
         if ($expected === null) {
             return [];
         }

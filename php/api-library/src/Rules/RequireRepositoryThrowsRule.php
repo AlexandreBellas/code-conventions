@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlexandreBellas\CodeConventions\PhpStan\Rules;
 
 use AlexandreBellas\CodeConventions\PhpStan\Ast;
+use AlexandreBellas\CodeConventions\PhpStan\Config;
 use AlexandreBellas\CodeConventions\PhpStan\DocComments;
 use AlexandreBellas\CodeConventions\PhpStan\Errors;
 use AlexandreBellas\CodeConventions\PhpStan\Paths;
@@ -15,13 +16,15 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 
 /**
- * A public entity method that calls the repository documents @throws BlingApiException|BlingInternalException.
+ * A public entity method that calls the repository documents the configured @throws tag.
  *
  * @implements Rule<ClassMethod>
  */
 final class RequireRepositoryThrowsRule implements Rule
 {
     public const IDENTIFIER = 'apiLibrary.requireRepositoryThrows';
+
+    public function __construct(private readonly Config $config) {}
 
     public function getNodeType(): string
     {
@@ -39,12 +42,13 @@ final class RequireRepositoryThrowsRule implements Rule
             return [];
         }
 
-        if (DocComments::hasRepositoryThrows($node->getDocComment())) {
+        $throws = $this->config->throwsTag();
+        if (DocComments::hasRepositoryThrows($node->getDocComment(), $throws)) {
             return [];
         }
 
         return [
-            Errors::at($node, self::IDENTIFIER, sprintf('%s must document `@throws BlingApiException|BlingInternalException`.', $node->name->toString())),
+            Errors::at($node, self::IDENTIFIER, sprintf('%s must document `@throws %s`.', $node->name->toString(), $throws)),
         ];
     }
 }

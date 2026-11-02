@@ -17,12 +17,16 @@
     "autoload": {
         "psr-4": {
             "AlexandreBellas\\CodeConventions\\PhpStan\\": "php/api-library/src/"
-        }
+        },
+        "exclude-from-classmap": [
+            "/php/api-library/src/Rules/*Test.php",
+            "/php/api-library/src/Rules/*Fixtures/"
+        ]
     },
     "autoload-dev": {
-        "psr-4": {
-            "AlexandreBellas\\CodeConventions\\PhpStan\\Tests\\": "php/api-library/tests/"
-        }
+        "classmap": [
+            "php/api-library/src/Rules"
+        ]
     },
     "extra": {
         "phpstan": {

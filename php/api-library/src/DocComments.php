@@ -28,16 +28,18 @@ final class DocComments
         return false;
     }
 
-    public static function hasBlingSee(?Doc $doc): bool
+    public static function hasDocsSee(?Doc $doc, string $host): bool
     {
         $text = self::text($doc);
 
-        return str_contains($text, '@see') && str_contains($text, 'developer.bling.com.br');
+        return str_contains($text, '@see') && str_contains($text, $host);
     }
 
-    public static function hasRepositoryThrows(?Doc $doc): bool
+    public static function hasRepositoryThrows(?Doc $doc, string $throwsTag): bool
     {
-        return (bool) preg_match('/@throws\s+BlingApiException\|BlingInternalException\b/', self::text($doc));
+        $pattern = '/@throws\s+' . preg_quote($throwsTag, '/') . '\b/';
+
+        return (bool) preg_match($pattern, self::text($doc));
     }
 
     public static function hasInheritDoc(?Doc $doc): bool
