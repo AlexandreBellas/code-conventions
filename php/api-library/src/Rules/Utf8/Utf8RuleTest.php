@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+namespace AlexandreBellas\CodeConventions\PhpStan\Rules\Utf8;
+
+use AlexandreBellas\CodeConventions\PhpStan\TestSupport\LoadsFixtures;
+use PHPStan\Rules\Rule;
+use PHPStan\Testing\RuleTestCase;
+
+/**
+ * @extends RuleTestCase<Utf8Rule>
+ */
+final class Utf8RuleTest extends RuleTestCase
+{
+    use LoadsFixtures;
+
+    protected function getRule(): Rule
+    {
+        return new Utf8Rule();
+    }
+
+    public function testInvalidUtf8(): void
+    {
+        $file = $this->fixture('utf8/bad.php');
+        $this->analyse([$file], [
+            ['Files are UTF-8.', 2],
+        ]);
+    }
+
+    public function testUtf8(): void
+    {
+        $file = $this->fixture('utf8/ok.php');
+        $this->analyse([$file], []);
+    }
+}

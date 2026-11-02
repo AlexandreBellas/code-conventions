@@ -19,14 +19,14 @@
             "AlexandreBellas\\CodeConventions\\PhpStan\\": "php/api-library/src/"
         },
         "exclude-from-classmap": [
-            "/php/api-library/src/Rules/*Test.php",
-            "/php/api-library/src/Rules/*Fixtures/"
+            "/php/api-library/src/Rules/*/*Test.php",
+            "/php/api-library/src/Rules/*/Fixtures/"
         ]
     },
     "autoload-dev": {
-        "classmap": [
-            "php/api-library/src/Rules"
-        ]
+        "psr-4": {
+            "AlexandreBellas\\CodeConventions\\PhpStan\\TestSupport\\": "php/api-library/tests/TestSupport/"
+        }
     },
     "extra": {
         "phpstan": {

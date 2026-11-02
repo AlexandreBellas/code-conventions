@@ -4,6 +4,8 @@ Rules for a PHP API client: one class per resource under `src/Entities`, schema 
 
 The extension has no default parameter values. Set every field below or PHPStan will not boot.
 
+Each rule is a folder under `src/Rules`. The folder contains the rule, its test, and `Fixtures`. Shared helpers stay in `src/`. Test helpers stay in `tests/TestSupport`.
+
 ## Parameters
 
 | Parameter | Type | Purpose |
