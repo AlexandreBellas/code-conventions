@@ -6,7 +6,7 @@
          cacheDirectory=".phpunit.cache">
     <testsuites>
         <testsuite name="phpstan-rules">
-            <directory>php/api-library/src/Rules</directory>
+            <directory suffix="Test.php">php/api-library/src/Rules</directory>
         </testsuite>
     </testsuites>
 </phpunit>
