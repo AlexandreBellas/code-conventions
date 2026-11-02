@@ -23,9 +23,7 @@ The PHP side is an API client preset: PHPStan rules, and a PHP-CS-Fixer config.
 
 ```bash
 composer config repositories.code-conventions vcs https://github.com/AlexandreBellas/code-conventions.git
-composer require --dev alexandrebellas/code-conventions:dev-cursor/php-api-library-2c68
+composer require --dev alexandrebellas/code-conventions:dev-main
 ```
-
-After this merges, require `dev-main`.
 
 Allow `phpstan/extension-installer` and set the parameters in [php/api-library/README.md](php/api-library/README.md). The fixer config is one line, documented in [php/php-cs-fixer/README.md](php/php-cs-fixer/README.md).
